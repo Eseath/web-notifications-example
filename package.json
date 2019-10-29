@@ -1,0 +1,19 @@
+{
+    "name": "example-push-api",
+    "main": "server.js",
+    "author": "Ruslan A. <ruslan.a94@yandex.com>",
+    "version": "1.0.0",
+    "license": "ISC",
+    "scripts": {
+        "start": "node ."
+    },
+    "dependencies": {
+        "body-parser": "^1.16.0",
+        "dotenv": "^4.0.0",
+        "express": "^4.14.1",
+        "mongoose": "^4.8.1",
+        "path": "^0.12.7",
+        "pug": "^2.0.0-beta11",
+        "web-push": "^3.4.1"
+    }
+}

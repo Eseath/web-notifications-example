@@ -1,0 +1,78 @@
+html,
+body {
+    margin: 0;
+    padding: 0;
+}
+
+body, input, textarea {
+    font-size: 16px;
+    font-family: "Helvetica Neue", Helvetica, "Segoe UI", Arial, freesans, sans-serif;
+    line-height: 1.5;
+    color: #111;
+}
+
+h1 {
+    font-size: 2.25em;
+}
+
+h2 {
+    font-size: 1.75em;
+}
+
+body {
+    background: #F7F6FB;
+}
+
+.container {
+    margin: 50px auto;
+    width: 512px;
+}
+
+.message {
+    display: flex;
+    margin-bottom: 15px;
+}
+
+.message.--right {
+    flex-direction: row-reverse;
+}
+
+.message__author-image {
+    margin: 0 15px 0 0;
+}
+
+.message__author-image img {
+    display: block;
+    object-fit: cover;
+    border-radius: 44px;
+    height: 44px;
+    width: 44px;
+}
+
+.message__text {
+    background: #E9E8ED;
+    border-radius: 32px;
+    color: #5F656B;
+    padding: 10px 15px;
+}
+
+.message.--right .message__author-image {
+    margin: 0 0 0 15px;
+}
+
+.message.--right .message__text {
+    background: #2A8CF1;
+    color: #F7F6FB;
+}
+
+.textarea {
+    background: #fff;
+    border-radius: 44px;
+    border: none;
+    width: 100%;
+    box-sizing: border-box;
+    box-shadow: 0 1px 8px rgba(0, 0, 0, .03);
+    resize: none;
+    padding: 10px 15px;
+    outline: none;
+}

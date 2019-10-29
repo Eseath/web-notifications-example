@@ -1,0 +1,14 @@
+# IDE
+.idea/
+.vscode/
+
+# Dependencies
+node_modules/
+
+# Environment configs
+.env
+.env.production
+
+# Other
+*.log
+npm-debug.log*

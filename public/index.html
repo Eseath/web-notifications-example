@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Web Notifications Example</title>
+        <link rel="stylesheet" href="/css/main.css">
+    </head>
+    <body>
+        <div class="container" id="app">
+            <div style="margin: 0 0 15px; border-bottom: 1px solid #ddd; padding: 0 0 15px;">
+                <input type="checkbox" v-model="notificationEnabled" @change="toggle"> Enable notifications
+            </div>
+
+            <div class="messages">
+                <div v-for="message in messages" class="message" :class="{ '--right': message.owned }">
+                    <div class="message__author-image">
+                        <img :src="message.authorImage" alt="">
+                    </div>
+                    <div class="message__text">{{ message.text }}</div>
+                </div>
+            </div>
+            <div style="border-top: 1px solid #ddd; margin: 20px 0 0; padding: 15px 0 0;">
+                <textarea rows="1" class="textarea" v-model.trim="newComment" @keydown.enter.prevent="sendComment"></textarea>
+            </div>
+        </div>
+        <script defer src="https://cdn.jsdelivr.net/npm/vue"></script>
+        <script defer src="/script/push.js"></script>
+    </body>
+</html>

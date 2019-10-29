@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+    database:
+        container_name: 'MongoDB'
+        image: 'mongo'
+        environment:
+            - MONGO_INITDB_DATABASE=main
+            - MONGO_INITDB_ROOT_USERNAME=default
+            - MONGO_INITDB_ROOT_PASSWORD=secret
+        volumes:
+            - .docker/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+            - .docker/mongo-volume:/data/db
+        ports:
+            - "27017-27019:27017-27019"
+
+    nodejs:
+        container_name: 'Node.js'
+        image: 'node:12'
+        working_dir: /var/www/app
+        command: node .
+        expose:
+            - 3000
+        volumes:
+            - .:/var/www/app
+        ports:
+            - "3010:3000"
+        depends_on:
+            - database
