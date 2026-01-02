@@ -1,14 +1,12 @@
-'use strict';
-
 let serviceWorkerRegistration;
 
-new Vue({
-    el: '#app',
+import { createApp, ref } from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js';
 
-    data: () => ({
-        newComment: '',
-        notificationEnabled: false,
-        messages: [
+createApp({
+    setup() {
+        const newComment = ref('');
+        const notificationEnabled = ref(false);
+        const messages = ref([
             {
                 authorImage: '/avatar.svg',
                 text: 'We invite you at our office for visit',
@@ -18,12 +16,32 @@ new Vue({
                 text: 'It\'s like dream come true thank you so much',
                 owned: true,
             },
-        ],
-    }),
+        ]);
 
-    methods: {
-        sendComment() {
-            if (!this.newComment) {
+        navigator.serviceWorker.addEventListener('message', event => {
+            if (document.hasFocus()) {
+                this.messages.push({
+                    text: event.data.body,
+                });
+            } else {
+                new Notification(event.data.title, {
+                    body: event.data.body,
+                    icon: '/avatar.svg',
+                });
+            }
+        });
+
+        navigator.serviceWorker.register('sw.js').then((sw) => {
+            serviceWorkerRegistration = sw;
+            serviceWorkerRegistration.pushManager.getSubscription().then((subscription) => {
+                notificationEnabled.value = !(subscription === null);
+            });
+        }).catch(function (error) {
+            console.error('Service Worker Error', error);
+        });
+
+        function sendComment() {
+            if (!newComment.value) {
                 return;
             }
 
@@ -33,20 +51,20 @@ new Vue({
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    text: this.newComment,
+                    text: newComment.value,
                 })
             });
 
-            this.messages.push({
+            messages.value.push({
                 authorImage: '/avatar.svg',
-                text: this.newComment,
+                text: newComment.value,
                 owned: true,
             });
 
-            this.newComment = '';
-        },
+            newComment.value = '';
+        }
 
-        requestSubscribePermission() {
+        function requestSubscribePermission() {
             if (!('Notification' in window)) {
                 alert('This browser does not support desktop notification');
                 return;
@@ -60,15 +78,15 @@ new Vue({
             if (Notification.permission !== 'granted') {
                 Notification.requestPermission().then(permission => {
                     if (permission !== 'granted') {
-                        this.subscribeUser();
+                        subscribeUser();
                     }
                 });
             } else {
-                this.subscribeUser();
+                subscribeUser();
             }
-        },
+        }
 
-        subscribeUser() {
+        function subscribeUser() {
             serviceWorkerRegistration.pushManager.subscribe({
                 userVisibleOnly: true,
                 applicationServerKey: urlB64ToUint8Array(appServerKey)
@@ -88,9 +106,9 @@ new Vue({
                 }).catch(function(err) {
                 console.log('Failed to subscribe the user: ', err);
             });
-        },
+        }
 
-        unsubscribeUser() {
+        function unsubscribeUser() {
             serviceWorkerRegistration.pushManager.getSubscription()
                 .then(function(subscription) {
                     if (subscription) {
@@ -118,41 +136,19 @@ new Vue({
                         return subscription.unsubscribe();
                     }
                 });
-        },
+        }
 
-        toggle() {
-            if (this.notificationEnabled) {
-                this.requestSubscribePermission();
+        function toggle() {
+            if (notificationEnabled.value) {
+                requestSubscribePermission();
             } else {
-                this.unsubscribeUser();
+                unsubscribeUser();
             }
-        },
-    },
+        }
 
-    created() {
-        navigator.serviceWorker.addEventListener('message', event => {
-            if (document.hasFocus()) {
-                this.messages.push({
-                    text: event.data.body,
-                });
-            } else {
-                new Notification(event.data.title, {
-                    body: event.data.body,
-                    icon: '/avatar.svg',
-                });
-            }
-        });
-
-        navigator.serviceWorker.register('sw.js').then((sw) => {
-            serviceWorkerRegistration = sw;
-            serviceWorkerRegistration.pushManager.getSubscription().then((subscription) => {
-                this.notificationEnabled = !(subscription === null);
-            });
-        }).catch(function (error) {
-            console.error('Service Worker Error', error);
-        });
+        return { newComment, notificationEnabled, messages, toggle, sendComment };
     },
-});
+}).mount('#app');
 
 const appServerKey = 'BB5Fla8q_6TqXc66UiYgSuQOUxWRS5o9SXmiwnUGF77jXLi7YZ535BBmZmB5Z_aMe3kXCRvLNqntmGyE-9wP0_A';
 
