@@ -12,7 +12,7 @@ exports.subscribe = (req, res) => {
         }
     });
 
-    push.save((err, push) => {
+    push.save().then(() => {
         const payload = JSON.stringify({
             title: 'Welcome',
             body: 'Thank you for enabling push notifications',
@@ -47,14 +47,12 @@ exports.subscribe = (req, res) => {
 
 exports.unsubscribe = (req, res) => {
     const endpoint = req.body.endpoint;
-
-    Push.findOneAndRemove({endpoint: endpoint}, function (err, data) {
-        if (err) {
-            console.error('error with unsubscribe', error);
-            res.status(500).send('unsubscription not possible');
-        }
+    Push.deleteOne({ endpoint: endpoint }).then(() => {
         console.log('unsubscribed');
         res.status(200).send('unsubscribe');
+    }).catch((e) => {
+        console.error('error with unsubscribe', e.message);
+        res.status(500).send('unsubscription not possible');
     });
 };
 
