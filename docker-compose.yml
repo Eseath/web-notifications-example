@@ -1,7 +1,7 @@
 services:
     database:
         container_name: 'MongoDB'
-        image: 'mongo'
+        image: mongo:8.2.3-noble
         environment:
             - MONGO_INITDB_DATABASE=main
             - MONGO_INITDB_ROOT_USERNAME=default
